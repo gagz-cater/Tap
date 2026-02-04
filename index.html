@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Be My Valentine 💘</title>
+
+  <style>
+    body {
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      font-family: Arial, sans-serif;
+      text-align: center;
+      overflow: hidden;
+      padding: 20px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      padding: 35px 25px;
+      border-radius: 28px;
+      box-shadow: 0px 12px 35px rgba(0,0,0,0.25);
+      max-width: 720px;
+      width: 100%;
+      position: relative;
+      z-index: 5;
+    }
+
+    h1 {
+      color: white;
+      font-size: 52px;
+      margin-bottom: 20px;
+      line-height: 1.1;
+      text-shadow: 0px 4px 12px rgba(0,0,0,0.25);
+    }
+
+    .sub {
+      color: rgba(255,255,255,0.92);
+      font-size: 22px;
+      margin-bottom: 35px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      padding: 22px 40px;
+      border-radius: 999px;
+      transition: all 0.25s ease;
+      font-weight: bold;
+      box-shadow: 0px 10px 25px rgba(0,0,0,0.25);
+      user-select: none;
+    }
+
+    #yes {
+      background: #ff2f6d;
+      color: white;
+      font-size: 32px;
+    }
+
+    #no {
+      background: #2c2c2c;
+      color: white;
+      font-size: 28px;
+    }
+
+    /* Floating hearts */
+    .heart {
+      position: absolute;
+      bottom: -40px;
+      opacity: 0.95;
+      animation: floatUp linear forwards;
+      z-index: 1;
+      pointer-events: none;
+      filter: drop-shadow(0px 6px 10px rgba(0,0,0,0.25));
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.95;
+      }
+      100% {
+        transform: translateY(-120vh) scale(1.8);
+        opacity: 0;
+      }
+    }
+
+    /* Confetti */
+    .confetti {
+      position: absolute;
+      top: -20px;
+      width: 10px;
+      height: 14px;
+      border-radius: 2px;
+      animation: fall linear forwards;
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0.95;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(120vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* Kiss pop */
+    .kiss {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 90px;
+      z-index: 999;
+      animation: pop 1s ease forwards;
+      pointer-events: none;
+      text-shadow: 0px 10px 25px rgba(0,0,0,0.25);
+    }
+
+    @keyframes pop {
+      0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+      40% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
+    }
+
+    /* Mobile */
+    @media (max-width: 480px) {
+      h1 { font-size: 44px; }
+      .sub { font-size: 20px; }
+      #yes { font-size: 30px; }
+      #no { font-size: 26px; }
+      button { padding: 20px 34px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card" id="mainCard">
+    <h1>Will you be my Valentine, <span id="name"></span>? 💖</h1>
+    <div class="sub">Choose wisely 😌💘</div>
+
+    <div class="buttons">
+      <button id="yes">YES 💘</button>
+      <button id="no">NO 🙄</button>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * NAME (Already set)
+     ***********************/
+    const valentinesName = "PUMPKIN 🥹💘";
+    document.getElementById("name").textContent = valentinesName;
+
+    /***********************
+     * YES grows / NO shrinks
+     ***********************/
+    let yesSize = 32;
+    let noSize = 28;
+
+    const yesBtn = document.getElementById("yes");
+    const noBtn = document.getElementById("no");
+
+    noBtn.addEventListener("click", () => {
+      yesSize += 10;
+      noSize -= 3;
+
+      yesBtn.style.fontSize = yesSize + "px";
+      noBtn.style.fontSize = noSize + "px";
+
+      // YES also becomes wider for drama 😈
+      yesBtn.style.padding =
+        (22 + yesSize / 7) + "px " + (40 + yesSize / 4) + "px";
+
+      if (noSize <= 10) {
+        noBtn.style.display = "none";
+      }
+    });
+
+    yesBtn.addEventListener("click", () => {
+      victoryMode();
+    });
+
+    /***********************
+     * Floating hearts
+     ***********************/
+    const heartEmojis = ["💖", "💘", "💕", "😍", "❤️", "💋"];
+
+    function spawnHeart() {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = (18 + Math.random() * 30) + "px";
+      heart.style.animationDuration = (4 + Math.random() * 4) + "s";
+
+      document.body.appendChild(heart);
+
+      setTimeout(() => heart.remove(), 9000);
+    }
+
+    setInterval(spawnHeart, 450);
+
+    /***********************
+     * Confetti burst
+     ***********************/
+    function confettiBurst() {
+      for (let i = 0; i < 80; i++) {
+        const c = document.createElement("div");
+        c.className = "confetti";
+
+        c.style.left = Math.random() * 100 + "vw";
+        c.style.animationDuration = (2.5 + Math.random() * 2.5) + "s";
+        c.style.transform = "rotate(" + Math.random() * 360 + "deg)";
+
+        // random colors
+        const colors = ["#ff2f6d", "#ffffff", "#ffcc00", "#7cffcb", "#7aa7ff", "#ff7af0"];
+        c.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+        document.body.appendChild(c);
+
+        setTimeout(() => c.remove(), 6000);
+      }
+    }
+
+    /***********************
+     * Kiss pop
+     ***********************/
+    function kissPop() {
+      const kiss = document.createElement("div");
+      kiss.className = "kiss";
+      kiss.textContent = "💋";
+      document.body.appendChild(kiss);
+
+      setTimeout(() => kiss.remove(), 1100);
+    }
+
+    /***********************
+     * Final YES screen
+     ***********************/
+    function victoryMode() {
+      kissPop();
+      confettiBurst();
+
+      document.body.innerHTML = `
+        <div style="
+          text-align:center;
+          color:white;
+          font-family:Arial, sans-serif;
+          padding:40px;
+        ">
+          <h1 style="font-size:64px; margin:0; text-shadow:0px 6px 16px rgba(0,0,0,0.25);">
+            YAYYYYY 💖😍
+          </h1>
+
+          <p style="font-size:30px; margin-top:22px;">
+            ${valentinesName}, you’re officially my Valentine 💘
+          </p>
+
+          <p style="font-size:22px; opacity:0.95; margin-top:10px;">
+            Hope this was worthy, pumpkin 😌💋
+          </p>
+        </div>
+      `;
+
+      // Keep confetti going a bit
+      setTimeout(confettiBurst, 700);
+      setTimeout(confettiBurst, 1400);
+    }
+  </script>
+
+</body>
+      </html>
